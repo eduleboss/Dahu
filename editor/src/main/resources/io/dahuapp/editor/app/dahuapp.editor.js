@@ -271,6 +271,54 @@ var dahuapp = (function(dahuapp, $) {
             }
         };
         
+        var updateMouse = function(idSlide) {
+            // BEGINNING TO SET THE MOUSE
+            var sep = dahuapp.drivers.fileSystem.getSeparator();
+            var ressourceImgDir = sep + dahuapp.drivers.rootDirectory.getRootDirectory() + sep + dahuapp.drivers.rootDirectory.getImgPath();
+            
+            var image = document.getElementById("preview-image");
+            var imageRect = image.getBoundingClientRect();
+            alert($(window).height() - imageRect.top - imageRect.bottom);
+            //alert("height : " + $('#preview-image').height() + "\nwidth :" + $('#preview-image').width());
+            /* DOES NOT SUPPORT RESIZING !!!!
+            $('#mouse').css({
+                'width': $('#preview-image').width() + "px",
+                'height': ($(window).height()- imageRect.top - imageRect.bottom) + "px"
+            });
+            */
+            var jsObject = jsonModel.getSlide(idSlide);
+            alert("width : " + imageRect.width + "\nheight : " + imageRect.height + "\ntop : " + imageRect.top + "\nbottom : " + imageRect.bottom + "\nleft : " + imageRect.left + "\nright : " + imageRect.right);
+            var left = Math.floor((imageRect.width * jsObject.object[1].mouseX )); /*offset de l'image*/// -4;// + imageRect.left);
+            var top = Math.floor((imageRect.height * jsObject.object[1].mouseY ));// + imageRect.top);
+            var width = 22;
+            var height = 22;
+            //alert("left : " + imageRect.left + "\ntop : " + imageRect.top);
+            //alert("mouseX : " + Math.floor(jsObject.object[1].mouseX * 100) + "\%\nmouseY : " + Math.floor(jsObject.object[1].mouseY * 100) +"\%");
+            
+            $('#cursor').css({
+                'top': /*left + "px"*/Math.floor(jsObject.object[1].mouseX*100) + "\%",
+                'left': /*top + "px"*/Math.floor(jsObject.object[1].mouseY*100) + "\%",
+                'width': width + "px",
+                'height': height + "px"
+            });
+            //alert(ressourceImgDir);
+            if ($('#cursor').empty()) {
+                $('#cursor').append(
+                    $(document.createElement('img'))
+                        .attr({'src': ressourceImgDir + sep + "cursor.png", 
+                               'alt': ressourceImgDir + sep + "cursor.png"})
+                );
+            } else {
+                $('#cursor').children().replaceWith(
+                    $(document.createElement('img'))
+                        .attr({'src': ressourceImgDir + sep + "cursor.png", 
+                               'alt': ressourceImgDir + sep + "cursor.png"})
+                           );
+            }
+            dahuapp.drivers.logger.JSsevere($('html').html());
+            
+        };
+        
         /*
          * Function to update the preview on the middle.
          * 
@@ -282,51 +330,15 @@ var dahuapp = (function(dahuapp, $) {
             cleanPreview();
             // Be careful, properties down there are no CSS but HTML !
             // CSS properties must be set in dahuapp.css !
-            if ($('#current-screen').empty()) {
-                $('#current-screen').append($(document.createElement('img'))
+            if ($('#preview-image').empty()) {
+                $('#preview-image').append($(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs, 'id': idSlide})); 
             } else {
-                $('#current-screen').children().replaceWith(
+                $('#preview-image').children().replaceWith(
                     $(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs, 'id': idSlide})); 
             }            
-            // BEGINNING TO SET THE SOURIS
-            
-            var sep = dahuapp.drivers.fileSystem.getSeparator();
-            var ressourceImgDir = sep + dahuapp.drivers.rootDirectory.getRootDirectory() + sep + dahuapp.drivers.rootDirectory.getImgPath();
-            
-            var image = document.getElementById("current-screen");
-            var imageRect = image.getBoundingClientRect();
-            alert(imageRect.height);
-            alert("toto");
-            var jsObject = jsonModel.getSlide(idSlide);
-            var left = Math.floor((imageRect.width * jsObject.object[1].mouseX )) /*offset de l'image*/// -4;// + imageRect.left);
-            var top = Math.floor((imageRect.height * jsObject.object[1].mouseY ));// + imageRect.top);
-            var width = 22;
-            var height = 22;
-            alert("left : " + imageRect.left + "\ntop : " + imageRect.top);
-            alert("mouseX : " + left + "\nmouseY : " + top);
-            $('#mouse').css({
-                'top': left + "px",
-                'left': top + "px",
-                'width': width + "px",
-                'height': height + "px"
-            });
-            alert(ressourceImgDir);
-            if ($('#mouse').empty()) {
-                $('#mouse').append(
-                    $(document.createElement('img'))
-                        .attr({'src': ressourceImgDir + sep + "cursor.png", 
-                               'alt': ressourceImgDir + sep + "cursor.png"})
-                );
-            } else {
-                $('#mouse').children().replaceWith(
-                    $(document.createElement('img'))
-                        .attr({'src': ressourceImgDir + sep + "cursor.png", 
-                               'alt': ressourceImgDir + sep + "cursor.png"})
-                           );
-            }
-            
+            updateMouse(idSlide);
         };
         
         /*

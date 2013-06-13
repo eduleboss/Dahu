@@ -64,10 +64,12 @@
 #preview-image {
     position: absolute;
     max-width: 100%;
+    display: inline-block;
 }
 
 #current-screen {
     position: absolute;
+    display: inline-block;
 }
 
 #mouse{

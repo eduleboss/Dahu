@@ -275,29 +275,32 @@ var dahuapp = (function(dahuapp, $) {
             // BEGINNING TO SET THE MOUSE
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var ressourceImgDir = sep + dahuapp.drivers.rootDirectory.getRootDirectory() + sep + dahuapp.drivers.rootDirectory.getImgPath();
-            
+            /*
             var image = document.getElementById("preview-image");
             var imageRect = image.getBoundingClientRect();
             alert($(window).height() - imageRect.top - imageRect.bottom);
             //alert("height : " + $('#preview-image').height() + "\nwidth :" + $('#preview-image').width());
-            /* DOES NOT SUPPORT RESIZING !!!!
+            //DOES NOT SUPPORT RESIZING !!!!
             $('#mouse').css({
                 'width': $('#preview-image').width() + "px",
                 'height': ($(window).height()- imageRect.top - imageRect.bottom) + "px"
             });
-            */
-            var jsObject = jsonModel.getSlide(idSlide);
+            
             alert("width : " + imageRect.width + "\nheight : " + imageRect.height + "\ntop : " + imageRect.top + "\nbottom : " + imageRect.bottom + "\nleft : " + imageRect.left + "\nright : " + imageRect.right);
             var left = Math.floor((imageRect.width * jsObject.object[1].mouseX )); /*offset de l'image*/// -4;// + imageRect.left);
-            var top = Math.floor((imageRect.height * jsObject.object[1].mouseY ));// + imageRect.top);
-            var width = 22;
-            var height = 22;
+            //var top = Math.floor((imageRect.height * jsObject.object[1].mouseY ));// + imageRect.top);
+
             //alert("left : " + imageRect.left + "\ntop : " + imageRect.top);
             //alert("mouseX : " + Math.floor(jsObject.object[1].mouseX * 100) + "\%\nmouseY : " + Math.floor(jsObject.object[1].mouseY * 100) +"\%");
             
+            var jsObject = jsonModel.getSlide(idSlide);
+            var width = 22;
+            var height = 22;
+            alert("width : " + $('#preview-image').width()
+                + "height : " + $('#preview-image').height());
             $('#cursor').css({
-                'top': /*left + "px"*/Math.floor(jsObject.object[1].mouseX*100) + "\%",
-                'left': /*top + "px"*/Math.floor(jsObject.object[1].mouseY*100) + "\%",
+                'top': /*left + "px"*/Math.floor(jsObject.object[1].mouseY*100) + "\%",
+                'left': /*top + "px"*/Math.floor(jsObject.object[1].mouseX*100) + "\%",
                 'width': width + "px",
                 'height': height + "px"
             });
@@ -334,7 +337,7 @@ var dahuapp = (function(dahuapp, $) {
                 $('#preview-image').append($(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs, 'id': idSlide})); 
             } else {
-                $('#preview-image').children().replaceWith(
+                $('#current-screen').children().replaceWith(
                     $(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs, 'id': idSlide})); 
             }            

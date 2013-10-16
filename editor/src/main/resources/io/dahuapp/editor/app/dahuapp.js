@@ -288,8 +288,8 @@
                 }
                 switch (action.type.toLowerCase()) {
                     case "appear":
-                        executableAction.abs = parseInt(action.abs * json.metaData.imageWidth * json.metaData.scale) + 'px';
-                        executableAction.ord = parseInt(action.ord * json.metaData.imageHeight * json.metaData.scale) + 'px';
+                        executableAction.abs = parseInt(action.abs * json.metaData.imageWidth) + 'px';
+                        executableAction.ord = parseInt(action.ord * json.metaData.imageHeight) + 'px';
                         executableAction.duration = action.duration;
                         executableAction.execute = function (events, selector) {
                             events.onActionStart.publish(events, selector);
@@ -330,8 +330,8 @@
                         };
                         break;
                     case "move":
-                        executableAction.finalAbs = parseInt(action.finalAbs * json.metaData.imageWidth * json.metaData.scale) + 'px';
-                        executableAction.finalOrd = parseInt(action.finalOrd * json.metaData.imageHeight * json.metaData.scale) + 'px';
+                        executableAction.finalAbs = parseInt(action.finalAbs * json.metaData.imageWidth) + 'px';
+                        executableAction.finalOrd = parseInt(action.finalOrd * json.metaData.imageHeight) + 'px';
                         executableAction.duration = action.duration;
                         executableAction.speed = action.speed;
                         executableAction.execute = function (events, selector) {

@@ -338,6 +338,11 @@
                 nbActionsRunning = 0;
 
                 /*
+                 * Apply scaling
+                 */
+                $(selector).css('transform', 'scale('+json.metaData.scale+')')
+
+                /*
                  * At the beginning, the visible image is the first one of the presentation
                  */
                 $(selector + " .object-list").children().hide();
@@ -345,19 +350,8 @@
                 $(selector + " ." + json.metaData.initialBackgroundId).show();
 
                 $(selector + " .mouse-cursor").css({
-                    'top': parseInt(json.metaData.initialMouseY * json.metaData.imageHeight * json.metaData.scale) + "px",
-                    'left': parseInt(json.metaData.initialMouseX * json.metaData.imageWidth * json.metaData.scale) + "px"
-                });
-
-                /* apply scale */
-                $(selector + " img.background").css({
-                    'width': parseInt(json.metaData.imageWidth * json.metaData.scale) + "px",
-                    'height': parseInt(json.metaData.imageHeight * json.metaData.scale) + "px"
-                })
-
-                //$(selector + " .tooltip").width($(this).width() * 2)
-                $(selector + " .tooltip").width(function(index, width) {
-                    return $(this).width() * json.metaData.scale;
+                    'top': parseInt(json.metaData.initialMouseY * json.metaData.imageHeight) + "px",
+                    'left': parseInt(json.metaData.initialMouseX * json.metaData.imageWidth) + "px"
                 });
 
                 $(selector + " .mouse-cursor").show();

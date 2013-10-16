@@ -86,16 +86,16 @@
             var generateCssTooltip = function ($generated, object) {
                 var style = [];
 
-                if( object.color != null ) {
+                if (object.color != null) {
                     style.push('background-color:   ' + object.color);
                 }
-                if( object.width != null ) {
+                if (object.width != null) {
                     style.push('width:  ' + object.width);
                 }
 
-                if( style.length != 0 ) {
+                if (style.length != 0) {
                     $generated.append(
-                    '.' + object.id + '{' + style.join(';') + '}\n');
+                        '.' + object.id + '{' + style.join(';') + '}\n');
                 }
 
                 return $generated;
@@ -260,7 +260,9 @@
             /* Private API */
 
             var json = {
-                metaData: {},
+                metaData: {
+                    'scale': 1.0 // default value
+                },
                 action: new Array()
             };
 
@@ -286,8 +288,8 @@
                 }
                 switch (action.type.toLowerCase()) {
                     case "appear":
-                        executableAction.abs = (action.abs * json.metaData.imageWidth) + 'px';
-                        executableAction.ord = (action.ord * json.metaData.imageHeight) + 'px';
+                        executableAction.abs = parseInt(action.abs * json.metaData.imageWidth * json.metaData.scale) + 'px';
+                        executableAction.ord = parseInt(action.ord * json.metaData.imageHeight * json.metaData.scale) + 'px';
                         executableAction.duration = action.duration;
                         executableAction.execute = function (events, selector) {
                             events.onActionStart.publish(events, selector);
@@ -328,8 +330,8 @@
                         };
                         break;
                     case "move":
-                        executableAction.finalAbs = (action.finalAbs * json.metaData.imageWidth) + 'px';
-                        executableAction.finalOrd = (action.finalOrd * json.metaData.imageHeight) + 'px';
+                        executableAction.finalAbs = parseInt(action.finalAbs * json.metaData.imageWidth * json.metaData.scale) + 'px';
+                        executableAction.finalOrd = parseInt(action.finalOrd * json.metaData.imageHeight * json.metaData.scale) + 'px';
                         executableAction.duration = action.duration;
                         executableAction.speed = action.speed;
                         executableAction.execute = function (events, selector) {
@@ -402,7 +404,8 @@
              * @param {object} jsonToLoad
              */
             this.loadJson = function (jsonToLoad) {
-                json.metaData = jsonToLoad.metaData;
+                $.extend(json.metaData, jsonToLoad.metaData);
+
                 for (var i = 0; i < jsonToLoad.action.length; i++) {
                     addExecutableAction(jsonToLoad.action[i]);
                 }
@@ -425,7 +428,9 @@
             /* Private API */
 
             var json = {
-                metaData: {},
+                metaData: {
+                    'scale': 1.0 // default
+                },
                 action: new Array()
             };
 
@@ -545,6 +550,7 @@
                 json.metaData = {};
                 json.metaData.imageWidth = width;
                 json.metaData.imageHeight = height;
+                json.metaData.scale = 1.0;
                 json.metaData.nextUniqueId = 0;
                 json.data = new Array();
             };

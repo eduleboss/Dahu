@@ -2,7 +2,7 @@
 
 /**
  * Dahuapp viewer module.
- * 
+ *
  * @param   dahuapp     dahuapp object to augment with module.
  * @param   $           jQuery
  * @returns dahuapp extended with viewer module.
@@ -80,7 +80,7 @@
                  * Called when at least one action was running and has finished.
                  */
                 self.onAllActionFinish = createEvent();
-                
+
                 return self;
             })();
 
@@ -91,9 +91,9 @@
             var nextAction = 0;       /* Action to execute on 'Next' click */
             var nbActionsRunning = 0;
             var previousAnchor = -1;  /* Last entered anchor, only used in
-                                       * case the 'onhashchange' event is
-                                       * not supported by the web browser */
-            
+             * case the 'onhashchange' event is
+             * not supported by the web browser */
+
             /*
              * Functions to reinitialise running actions and subscribed
              * callbacks (reinitialise is called once without stopping
@@ -109,7 +109,7 @@
                 events.onActionStart.subscribe(onActionStartEventHandler);
                 events.onAllActionFinish.unsubscribeAll();
             };
-            
+
             /*
              * Timer used to program onNext event in autoplay mode.
              */
@@ -170,7 +170,7 @@
                     nextAction = json.action.length;
                 }
             };
-            
+
             /*
              * Function used when an "onPreviousEvent" event is caught.
              */
@@ -304,7 +304,7 @@
                 // Here, the anchor has not been found during the action scan
                 return null;
             };
-            
+
             /*
              * Updates the position of the presentation depending on the
              * given anchor (next action wanted).
@@ -345,8 +345,19 @@
                 $(selector + " ." + json.metaData.initialBackgroundId).show();
 
                 $(selector + " .mouse-cursor").css({
-                    'top': (json.metaData.initialMouseY * json.metaData.imageHeight) + "px",
-                    'left': (json.metaData.initialMouseX * json.metaData.imageWidth) + "px"
+                    'top': parseInt(json.metaData.initialMouseY * json.metaData.imageHeight * json.metaData.scale) + "px",
+                    'left': parseInt(json.metaData.initialMouseX * json.metaData.imageWidth * json.metaData.scale) + "px"
+                });
+
+                /* apply scale */
+                $(selector + " img.background").css({
+                    'width': parseInt(json.metaData.imageWidth * json.metaData.scale) + "px",
+                    'height': parseInt(json.metaData.imageHeight * json.metaData.scale) + "px"
+                })
+
+                //$(selector + " .tooltip").width($(this).width() * 2)
+                $(selector + " .tooltip").width(function(index, width) {
+                    return $(this).width() * json.metaData.scale;
                 });
 
                 $(selector + " .mouse-cursor").show();
@@ -373,7 +384,7 @@
                         dataJson = data;
                     }
                 });
-                
+
                 load(dataJson);
             };
 
@@ -385,7 +396,7 @@
             };
 
             this.start = function() {
-                
+
                 /*
                  * Subscription of methods to their events.
                  */
@@ -401,7 +412,7 @@
                  * in the right position.
                  */
                 jumpToAnchor(window.location.hash.substring(1));
-                
+
                 /*
                  * If the anchor changes during the presentation, then the
                  * presentation is updated
@@ -427,7 +438,7 @@
                 $(selector + " .next").click(function() {
                     events.onNext.publish();
                 });
-                
+
                 /*
                  * A click on the "previous" button publishes a previousSlide event
                  */

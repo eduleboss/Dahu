@@ -157,13 +157,9 @@ public class DahuApp extends Application {
                 if (newState == State.SUCCEEDED) {
                     // load drivers
                     JSObject dahuapp = (JSObject) webview.getEngine().executeScript("window.dahuapp");
-                    dahuapp.setMember("drivers", new DahuAppProxy(primaryStage, webview.getEngine()));
+                    dahuapp.setMember("drivers", new DahuAppProxy());
 
-                    // init engine
-                    webview.getEngine().executeScript("dahuapp.editor.init();");
-
-                    // load the drivers
-                    webview.getEngine().executeScript("dahuapp.drivers.onLoad();");
+		    webview.getEngine().executeScript("dahuapp.drivers.logger.JSinfo(\"dahuapp.editor.js\", \"init\", \"Going to create!\");");
 
                     List<String> args = getParameters().getUnnamed();
                     if (args.size() == 1) {

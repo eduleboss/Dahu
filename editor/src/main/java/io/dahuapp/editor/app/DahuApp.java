@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import java.net.URLClassLoader;
+
 /**
  * Main class of the application. Runs the GUI to allow the user to take
  * screenshots and edit the presentation he wants to make.
@@ -53,6 +55,15 @@ public class DahuApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+ 
+        URL[] urls = ((URLClassLoader)cl).getURLs();
+ 
+        for(URL url: urls){
+        	System.out.println(url.getFile());
+        }
+
         StackPane root = new StackPane();
 
         // init dahuapp

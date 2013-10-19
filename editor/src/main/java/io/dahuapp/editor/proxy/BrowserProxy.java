@@ -1,8 +1,8 @@
 package io.dahuapp.editor.proxy;
 
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+// import edu.stanford.ejalbert.BrowserLauncher;
+// import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+// import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,7 +22,7 @@ public class BrowserProxy implements Proxy {
      * Alternative way to open a browser (Desktop is not supported on many linux
      * platforms).
      */
-    private BrowserLauncher browserLauncher;
+    // private BrowserLauncher browserLauncher;
 
     /**
      * Runs the preview (opens the default web browser).
@@ -72,8 +72,8 @@ public class BrowserProxy implements Proxy {
             } catch (URISyntaxException | IOException e) {
                 LoggerProxy.severe("Browser couldn't be opened.", e);
             }
-        } else if (browserLauncher != null) {
-            browserLauncher.openURLinBrowser(url);
+        // } else if (browserLauncher != null) {
+        //     browserLauncher.openURLinBrowser(url);
         } else {
             // Maybe add a message popup here
             LoggerProxy.severe("Browser driver not supported.");
@@ -85,12 +85,12 @@ public class BrowserProxy implements Proxy {
         if (Desktop.isDesktopSupported()) {
             desktop = Desktop.getDesktop();
         } else {
-            try {
-                browserLauncher = new BrowserLauncher();
-            } catch (BrowserLaunchingInitializingException
-                    | UnsupportedOperatingSystemException e) {
-                LoggerProxy.severe("BrowserLauncher couldn't be opened.", e);
-            }
+            // try {
+            //     browserLauncher = new BrowserLauncher();
+            // } catch (BrowserLaunchingInitializingException
+            //         | UnsupportedOperatingSystemException e) {
+            //     LoggerProxy.severe("BrowserLauncher couldn't be opened.", e);
+            // }
         }
     }
 

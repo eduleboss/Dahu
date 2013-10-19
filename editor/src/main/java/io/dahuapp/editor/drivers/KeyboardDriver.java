@@ -2,10 +2,10 @@ package io.dahuapp.editor.drivers;
 
 import io.dahuapp.editor.proxy.LoggerProxy;
 import java.util.ArrayList;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+// import org.jnativehook.GlobalScreen;
+// import org.jnativehook.NativeHookException;
+// import org.jnativehook.keyboard.NativeKeyEvent;
+// import org.jnativehook.keyboard.NativeKeyListener;
 
 /**
  * Driver to get keyboard events.
@@ -55,45 +55,45 @@ public class KeyboardDriver implements Driver {
     
     @Override
     public void onLoad() {
-        try {
-            GlobalScreen.registerNativeHook();
-        } catch (NativeHookException ex) {
-            LoggerProxy.severe(getClass().getName(), "onLoad", 
-                    "There was a problem registering the native hook. " 
-                    + ex.getMessage(), ex);
-            System.exit(1);
-        }
+        // try {
+        //     GlobalScreen.registerNativeHook();
+        // } catch (NativeHookException ex) {
+        //     LoggerProxy.severe(getClass().getName(), "onLoad", 
+        //             "There was a problem registering the native hook. " 
+        //             + ex.getMessage(), ex);
+        //     System.exit(1);
+        // }
         
         // Construct the example object and initialze native hook.
-        GlobalScreen.getInstance().addNativeKeyListener(new NativeKeyListener() {
-            @Override
-            public void nativeKeyReleased(NativeKeyEvent nke) {
-                for (final KeyboardListener listener : listeners) {
-                    listener.keyReleased(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
-                }
-            }
+        // GlobalScreen.getInstance().addNativeKeyListener(new NativeKeyListener() {
+        //     @Override
+        //     public void nativeKeyReleased(NativeKeyEvent nke) {
+        //         for (final KeyboardListener listener : listeners) {
+        //             listener.keyReleased(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
+        //         }
+        //     }
             
-            @Override
-            public void nativeKeyTyped(NativeKeyEvent nke) {
-                for (final KeyboardListener listener : listeners) {
-                    listener.keyTyped(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
-                }
-            }
+        //     @Override
+        //     public void nativeKeyTyped(NativeKeyEvent nke) {
+        //         for (final KeyboardListener listener : listeners) {
+        //             listener.keyTyped(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
+        //         }
+        //     }
             
-            @Override
-            public void nativeKeyPressed(NativeKeyEvent nke) {
-                for (final KeyboardListener listener : listeners) {
-                    listener.keyPressed(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
-                }
-            }
-        });
+        //     @Override
+        //     public void nativeKeyPressed(NativeKeyEvent nke) {
+        //         for (final KeyboardListener listener : listeners) {
+        //             listener.keyPressed(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
+        //         }
+        //     }
+        // });
         LoggerProxy.info(getClass().getName(), "onLoad",
                 "Starting " +  KeyboardDriver.class.getSimpleName() + " driver");
     }
 
     @Override
     public void onStop() {
-        GlobalScreen.unregisterNativeHook();
+        // GlobalScreen.unregisterNativeHook();
         LoggerProxy.info(getClass().getName(), 
                 "onStop", "Stopping " + KeyboardDriver.class.getSimpleName() + " driver");
     }

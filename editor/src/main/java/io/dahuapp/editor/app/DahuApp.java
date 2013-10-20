@@ -1,8 +1,3 @@
-package io.dahuapp.editor.app;
-
-import io.dahuapp.editor.proxy.DahuAppProxy;
-import io.dahuapp.editor.utils.Dialogs;
-import java.io.BufferedReader;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -16,23 +11,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.event.EventHandler;
-import javafx.scene.web.PromptData;
 import javafx.scene.web.WebEvent;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
-import java.util.List;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 
-import java.net.URLClassLoader;
-
-/**
- * Main class of the application. Runs the GUI to allow the user to take
- * screenshots and edit the presentation he wants to make.
- */
 public class DahuApp extends Application {
     private static final int MIN_WIDTH = 720;
     private static final int MIN_HEIGHT = 520;
@@ -40,6 +21,7 @@ public class DahuApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+	System.out.println(com.sun.javafx.runtime.VersionInfo.getRuntimeVersion());
         StackPane root = new StackPane();
 
         // init dahuapp
@@ -51,47 +33,36 @@ public class DahuApp extends Application {
         // create the sceen
         Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
 
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent t) {
-                webview.getEngine().executeScript("dahuapp.drivers.onStop();");
-                Platform.exit();
-            }
-        });
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    /**
-     * The main() method is ignored in correctly deployed JavaFX application.
-     * main() serves only as fallback in case the application can not be
-     * launched through deployment artifacts, e.g., in IDEs with limited FX
-     * support. NetBeans ignores main().
-     *
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         /* launch app */
         launch(args);
     }
 
-    DahuAppProxy drivers = new DahuAppProxy();
-    /**
-     * Initializes the WebView with the HTML content and binds the drivers to
-     * the Dahuapp JavaScript object.
-     *
-     * @param primaryStage Main stage of the app (for the proxy).
-     */
+    public static class LoggerProxy {
+	public void JSinfo(String message) {
+	    System.out.println(message);
+	}
+    };
+
+    LoggerProxy logger = new LoggerProxy();
+
     private void initDahuApp(final Stage primaryStage) {
         webview = new WebView();
         webview.setContextMenuEnabled(false);
         webview.getEngine().loadContent("<html><head><title>Hello</title></head><body>content"
 					+ "<script>"
-					+ "window.dahuapp = {};"
-					+ "dahuapp.editor = {};"
+					+ "window.testobject = {};"
+					+ "function crash() { testobject.logger.JSinfo(\"dahuapp.editor.js\", \"foo\"); };"
+					+ "function dontCrash() { testobject.logger.JSinfo(\"dahuapp.editor.js\"); };"
 					+ "</script>"
+					+ "<br><a onClick=\"crash();\">don't click here</a>"
+					+ "<br><a onClick=\"dontCrash();\">click here</a>"
 					+ "</body></html>");
 	
         // extend the webview js context
@@ -100,11 +71,13 @@ public class DahuApp extends Application {
             public void changed(final ObservableValue<? extends Worker.State> observableValue, final State oldState, final State newState) {
                 if (newState == State.SUCCEEDED) {
                     // load drivers
-                    JSObject dahuapp = (JSObject) webview.getEngine().executeScript("window.dahuapp");
-                    dahuapp.setMember("drivers", drivers);
-		    //dahuapp.setMember("drivers", new DahuAppProxy());
-
-		    webview.getEngine().executeScript("dahuapp.drivers.logger.JSinfo(\"dahuapp.editor.js\", \"init\", \"test\");");
+                    JSObject testobject = (JSObject) webview.getEngine().executeScript("window.testobject");
+                    testobject.setMember("logger", logger);
+		    
+		    // This works OK
+		    webview.getEngine().executeScript("testobject.logger.JSinfo(\"dahuapp.editor.js\");");
+		    // One extra parameter => segfault
+		    // webview.getEngine().executeScript("testobject.logger.JSinfo(\"dahuapp.editor.js\", \"foo\");");
                 }
             }
         });

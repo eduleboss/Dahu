@@ -34,36 +34,12 @@ import java.net.URLClassLoader;
  * screenshots and edit the presentation he wants to make.
  */
 public class DahuApp extends Application {
-
-    /**
-     * Title of the application.
-     */
-    public static final String TITLE = "DahuApp Editor";
-    /**
-     * Minimum width of the editor window.
-     */
     private static final int MIN_WIDTH = 720;
-    /**
-     * Minimum height of the editor window.
-     */
     private static final int MIN_HEIGHT = 520;
-    /**
-     * WebView of the application, all the elements will be displayed in this
-     * WebView.
-     */
     private WebView webview;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
- 
-        URL[] urls = ((URLClassLoader)cl).getURLs();
- 
-        for(URL url: urls){
-        	System.out.println(url.getFile());
-        }
-
         StackPane root = new StackPane();
 
         // init dahuapp
@@ -84,7 +60,6 @@ public class DahuApp extends Application {
         });
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
-        primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -98,23 +73,11 @@ public class DahuApp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        /* fix for osx */
-        System.setProperty("javafx.macosx.embedded", "true");
-        java.awt.Toolkit.getDefaultToolkit();
-
         /* launch app */
         launch(args);
     }
-    
-    /**
-     * Gets the path of a ressource of the application.
-     * @param name Name of the resource to find.
-     * @return The path to the resource (as it can be put in a file and opened).
-     */
-    public static String getResource(String name) {
-        return DahuApp.class.getResource(name).toExternalForm();
-    }
 
+    DahuAppProxy drivers = new DahuAppProxy();
     /**
      * Initializes the WebView with the HTML content and binds the drivers to
      * the Dahuapp JavaScript object.
@@ -124,32 +87,13 @@ public class DahuApp extends Application {
     private void initDahuApp(final Stage primaryStage) {
         webview = new WebView();
         webview.setContextMenuEnabled(false);
-
-        // load main app
-        final URL location = getClass().getResource("dahuapp.html");
-        String content = null;
-        try {
-            InputStream in = location.openStream();
-            InputStreamReader is = new InputStreamReader(in);
-            StringBuilder sb = new StringBuilder();
-            BufferedReader br = new BufferedReader(is);
-            String read = br.readLine();
-            while (read != null) {
-                sb.append(read).append("\n");
-                read = br.readLine();
-            }
-            content = sb.toString();
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-	content = content.replace("\"localresource:",
-                                  "\"" + location.toExternalForm().replace("dahuapp.html", ""));
-        // It's tempting to use load(location.toExternalForm())
-        // directly, but it would load a jar: URL when the application
-        // is run from a package. As a result, the WebView would
-        // prevent us from loading file:// URLs.
-        webview.getEngine().loadContent(content);
-
+        webview.getEngine().loadContent("<html><head><title>Hello</title></head><body>content"
+					+ "<script>"
+					+ "window.dahuapp = {};"
+					+ "dahuapp.editor = {};"
+					+ "</script>"
+					+ "</body></html>");
+	
         // extend the webview js context
         webview.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
             @Override
@@ -157,44 +101,11 @@ public class DahuApp extends Application {
                 if (newState == State.SUCCEEDED) {
                     // load drivers
                     JSObject dahuapp = (JSObject) webview.getEngine().executeScript("window.dahuapp");
-                    dahuapp.setMember("drivers", new DahuAppProxy());
+                    dahuapp.setMember("drivers", drivers);
+		    //dahuapp.setMember("drivers", new DahuAppProxy());
 
-		    webview.getEngine().executeScript("dahuapp.drivers.logger.JSinfo(\"dahuapp.editor.js\", \"init\", \"Going to create!\");");
-
-                    List<String> args = getParameters().getUnnamed();
-                    if (args.size() == 1) {
-                        File project = new File(args.get(0));
-                        webview.getEngine().executeScript(
-                            "dahuapp.editor.openOrCreateProject(\""
-                            + project.getAbsolutePath().replace("\"", "\\\"")
-                            + "\");");
-                    }
+		    webview.getEngine().executeScript("dahuapp.drivers.logger.JSinfo(\"dahuapp.editor.js\", \"init\", \"test\");");
                 }
-            }
-        });
-
-        // adds a dialog alert handler
-        webview.getEngine().setOnAlert(new EventHandler<WebEvent<String>>() {
-            @Override
-            public void handle(WebEvent<String> e) {
-                Dialogs.showMessage(e.getData());
-                e.consume();
-            }
-        });
-
-        // adds a confirm dialog handler
-        webview.getEngine().setConfirmHandler(new Callback<String, Boolean>() {
-            @Override
-            public Boolean call(String p) {
-                return Dialogs.showConfirm(p);
-            }
-        });
-
-        // adds a prompt dialog handler
-        webview.getEngine().setPromptHandler(new Callback<PromptData, String>() {
-            @Override
-            public String call(PromptData p) {
-                return Dialogs.showPrompt(p.getMessage(), p.getDefaultValue());
             }
         });
     }

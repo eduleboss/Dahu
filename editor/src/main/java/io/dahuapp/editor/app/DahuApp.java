@@ -48,6 +48,11 @@ public class DahuApp extends Application {
 	public void JSinfo(String message) {
 	    System.out.println(message);
 	}
+        /* adding this does not change the issue
+        public void JSinfo(String message, String arg2) {
+	    System.out.println(message);
+	}
+        */
     };
 
     LoggerProxy logger = new LoggerProxy();
